@@ -2,7 +2,7 @@
 
 Any console.log, console.error, console.warn, or console.info you call will get routed to a different function of your choosing.
 
-There are built-in handlers for POSTing a JSON document to an HTTP, sending a JSON string to a WebSocket server, or printing a JSON string out in an <pre> tag in a DOM element.
+There are built-in handlers for POSTing a JSON document to an HTTP, sending a JSON string to a WebSocket server, or printing a JSON string out in an &lt;pre> tag in a DOM element.
 
 Additionally, you may pass a single-parameter function as the handler and do whatever you want after that.
 
