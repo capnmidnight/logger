@@ -25,3 +25,12 @@ Subsequent calls of `logger.setup` will chain calls together.
 
     // When you're done, just change the type to DISABLED and no proxy will be created
     logger.setup(logger.DISABLED, "doesn't matter what is here");
+	
+The data sent to the proxy is a JSON object of the form:
+
+    {
+	    "name": "log", // or error, warn, info
+		"args": [...] // a list of arguments used in the call
+    }
+	
+If any of the arguments are typeof === "object", then a shallow serialization of the object is performed, one level of properties deep. If any of those properties are objects, they will appear as the string "[Object object]".
