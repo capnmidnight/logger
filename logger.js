@@ -1,6 +1,45 @@
 ﻿var logger = (function () {
   "use strict";
 
+  var send = null;
+      
+  function cloneArgs(args) {
+    var output = [];
+    for (var i = 0; i < args.length; ++i) {
+      if (typeof args[i] === "object") {
+        var obj1 = args[i],
+        obj2 = {};
+        for (var key in obj1) {
+          obj2[key] = obj1[key];
+          if (obj2[key] !== null && obj2[key] !== undefined) {
+            obj2[key] = obj2[key].toString();
+          }
+        }
+        output.push(obj2);
+      }
+      else {
+        output.push(args[i]);
+      }
+    }
+    return output;
+  }
+  
+
+  function wrap(name) {
+    var orig = name;
+    while (console[orig]) {
+	  orig = "_" + orig;
+    }
+    console[orig] = console[name];
+    return function() {
+	  console[orig].apply(console, arguments);
+	  send(JSON.stringify({
+	    name: name,
+	    args: cloneArgs(arguments)
+	  }));
+    };
+  }
+        
   var logger = {
     setup: null,
     DISABLED: 0,
@@ -12,9 +51,6 @@
 
   logger.setup = function setup(type, target) {
     if (type !== logger.DISABLED) {
-
-      var send = null;
-
       if ((type === logger.HTTP || type === logger.WEBSOCKET) && location.protocol === "file:") {
         console.warn("Can't perform HTTP requests from the file system. Not going to setup the error proxy, but will setup the error catch-all.");
       }
@@ -50,42 +86,6 @@
       }
 
       if (send !== null) {
-        function cloneArgs(args) {
-          var output = [];
-          for (var i = 0; i < args.length; ++i) {
-            if (typeof args[i] === "object") {
-              var obj1 = args[i],
-                obj2 = {};
-              for (var key in obj1) {
-                obj2[key] = obj1[key];
-                if (obj2[key] !== null && obj2[key] !== undefined) {
-                  obj2[key] = obj2[key].toString();
-                }
-              }
-              output.push(obj2);
-            }
-            else {
-              output.push(args[i]);
-            }
-          }
-          return output;
-        }
-
-        function wrap(name) {
-          var orig = name;
-          while (console[orig]) {
-            orig = "_" + orig;
-          }
-          console[orig] = console[name];
-          return function () {
-            console[orig].apply(console, arguments);
-            send(JSON.stringify({
-              name: name,
-              args: cloneArgs(arguments)
-            }));
-          }
-        }
-
         ["log", "info", "warn", "error"].forEach(function (n) {
           console[n] = wrap(n);
         });
