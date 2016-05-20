@@ -1,7 +1,7 @@
 {
   "name": "logger",
   "description": "Proxies console.whatever commands to HTTP, WebSocket, or DOM.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "Sean T. McBeth <sean@seanmcbeth.com> (https://www.seanmcbeth.com)",
   "license": "GPL-3.0",
   "homepage": "http://www.primrosevr.com",
