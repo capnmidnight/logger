@@ -6,7 +6,7 @@
   function cloneArgs(args) {
     var output = [];
     for (var i = 0; i < args.length; ++i) {
-      if (typeof args[i] === "object") {
+      if (typeof args[i] === "object" && !(args[i] instanceof String)) {
         var obj1 = args[i],
         obj2 = {};
         for (var key in obj1) {
@@ -18,7 +18,7 @@
         output.push(obj2);
       }
       else {
-        output.push(args[i]);
+        output.push(args[i].toString());
       }
     }
     return output;
