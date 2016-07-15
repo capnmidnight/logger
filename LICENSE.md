@@ -1,6 +1,6 @@
-# 9: LICENSE
+# LICENSE
 
-https://www.github.com/capnmidnight/Primrose
+https://www.github.com/capnmidnight/logger
 Copyright (c) 2015 Sean T. McBeth
 All rights reserved.
 
