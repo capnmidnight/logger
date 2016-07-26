@@ -14,7 +14,8 @@
     "LICENSE.md",
     "README.md",
     "bare-bones-logger.js",
-    "bare-bones-logger.min.js"
+    "bare-bones-logger.min.js",
+    "index.html"
   ],
   "keywords": [
     "logging",
