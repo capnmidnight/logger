@@ -21,6 +21,6 @@
 	  "error handling"
   ],
   "devDependencies": {
-    "notiontheory-basic-build": "^2.0.0"
+    "notiontheory-basic-build": "^2.1.0"
   }
 }

@@ -1,5 +1,5 @@
 ﻿var gulp = require("gulp"),
-  nt = require("../notiontheory-basic-build/src/index.js").setup(gulp, true),
+  nt = require("notiontheory-basic-build").setup(gulp, true),
   tasks = nt.js(
     "bare-bones-logger",
     ["src/**/*.js"]);
