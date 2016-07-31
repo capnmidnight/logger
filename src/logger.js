@@ -2,27 +2,6 @@
 
 var send = null;
 
-function cloneArgs(args) {
-  var output = [];
-  for (var i = 0; i < args.length; ++i) {
-    if (typeof args[i] === "object" && !(args[i] instanceof String)) {
-      var obj1 = args[i],
-        obj2 = {};
-      for (var key in obj1) {
-        obj2[key] = obj1[key];
-        if (obj2[key] !== null && obj2[key] !== undefined) {
-          obj2[key] = obj2[key].toString();
-        }
-      }
-      output.push(obj2);
-    }
-    else {
-      output.push(args[i].toString());
-    }
-  }
-  return output;
-}
-
 function mangle(name) {
   return "_" + name;
 }
@@ -34,9 +13,26 @@ function wrap(name) {
   }
   console[orig] = console[name];
   return function () {
+    var args = [];
+    for (var i = 0; i < arguments.length; ++i) {
+      if (typeof arguments[i] === "object" && !(arguments[i] instanceof String)) {
+        var obj1 = arguments[i],
+          obj2 = {};
+        for (var key in obj1) {
+          obj2[key] = obj1[key];
+          if (obj2[key] !== null && obj2[key] !== undefined) {
+            obj2[key] = obj2[key].toString();
+          }
+        }
+        args.push(obj2);
+      }
+      else {
+        args.push(arguments[i].toString());
+      }
+  }
     var obj = send({
-      name: name,
-      args: cloneArgs(arguments)
+      name,
+      args
     });
     if (obj) {
       console[orig].apply(console, obj.args);
