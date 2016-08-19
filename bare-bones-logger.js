@@ -9,29 +9,31 @@
 }(this, function() {
 "use strict";
 
+var logger = {
+  setup: null,
+  DISABLED: 0,
+  HTTP: 1,
+  WEBSOCKET: 2,
+  DOM: 3,
+  USER: 4
+};
+return logger;
+}));
+
+;(function(root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define([], factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory();
+  } else {
+    root.logger.setup = factory();
+  }
+}(this, function() {
+"use strict";
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 var send = null;
-
-function cloneArgs(args) {
-  var output = [];
-  for (var i = 0; i < args.length; ++i) {
-    if (_typeof(args[i]) === "object" && !(args[i] instanceof String)) {
-      var obj1 = args[i],
-          obj2 = {};
-      for (var key in obj1) {
-        obj2[key] = obj1[key];
-        if (obj2[key] !== null && obj2[key] !== undefined) {
-          obj2[key] = obj2[key].toString();
-        }
-      }
-      output.push(obj2);
-    } else {
-      output.push(args[i].toString());
-    }
-  }
-  return output;
-}
 
 function mangle(name) {
   return "_" + name;
@@ -44,9 +46,25 @@ function wrap(name) {
   }
   console[orig] = console[name];
   return function () {
+    var args = [];
+    for (var i = 0; i < arguments.length; ++i) {
+      if (_typeof(arguments[i]) === "object" && !(arguments[i] instanceof String)) {
+        var obj1 = arguments[i],
+            obj2 = {};
+        for (var key in obj1) {
+          obj2[key] = obj1[key];
+          if (obj2[key] !== null && obj2[key] !== undefined) {
+            obj2[key] = obj2[key].toString();
+          }
+        }
+        args.push(obj2);
+      } else {
+        args.push(arguments[i].toString());
+      }
+    }
     var obj = send({
       name: name,
-      args: cloneArgs(arguments)
+      args: args
     });
     if (obj) {
       console[orig].apply(console, obj.args);
@@ -54,16 +72,7 @@ function wrap(name) {
   };
 }
 
-var logger = {
-  setup: null,
-  DISABLED: 0,
-  HTTP: 1,
-  WEBSOCKET: 2,
-  DOM: 3,
-  USER: 4
-};
-
-logger.setup = function setup(type, target) {
+function setup(type, target) {
   if (type !== logger.DISABLED) {
     if ((type === logger.HTTP || type === logger.WEBSOCKET) && location.protocol === "file:") {
       console.warn("Can't perform HTTP requests from the file system. Not going to setup the error proxy, but will setup the error catch-all.");
@@ -125,5 +134,7 @@ logger.setup = function setup(type, target) {
     };
   }
 };
-return logger;
+return setup;
 }));
+
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9sb2dnZXIuanMiLCJzcmMvbG9nZ2VyL3NldHVwLmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FDckJBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQTtBQUNBO0FBQ0E7QUFDQSIsImZpbGUiOiJiYXJlLWJvbmVzLWxvZ2dlci5qcyJ9

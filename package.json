@@ -1,7 +1,7 @@
 {
   "name": "bare-bones-logger",
   "description": "Proxies console.whatever commands to HTTP, WebSocket, or DOM.",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "author": "Sean T. McBeth <sean@seanmcbeth.com> (https://www.seanmcbeth.com)",
   "license": "GPL-3.0",
   "homepage": "http://www.primrosevr.com",
@@ -22,6 +22,6 @@
 	  "error handling"
   ],
   "devDependencies": {
-    "notiontheory-basic-build": "^2.1.0"
+    "notiontheory-basic-build": "^2.1.10"
   }
 }
