@@ -106,6 +106,6 @@ function setup(type, target) {
           name = mangle(name);
         }
       }
-    }
+    };
   }
-};
+}

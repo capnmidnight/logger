@@ -7,4 +7,4 @@ const logger = {
   WEBSOCKET: 2,
   DOM: 3,
   USER: 4
-}
+};
