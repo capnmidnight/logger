@@ -1,5 +1,3 @@
-"use strict";
-
 var send = null;
 
 function mangle(name) {

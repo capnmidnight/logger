@@ -1,5 +1,3 @@
-"use strict";
-
 const logger = {
   setup: null,
   DISABLED: 0,
