@@ -1,10 +1,10 @@
 {
   "name": "bare-bones-logger",
   "description": "Proxies console.whatever commands to HTTP, WebSocket, or DOM.",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "author": "Sean T. McBeth <sean@seanmcbeth.com> (https://www.seanmcbeth.com)",
   "license": "GPL-3.0",
-  "homepage": "http://www.primrosevr.com",
+  "homepage": "https://github.com/capnmidnight/logger",
   "repository": {
     "type": "git",
     "url": "https://github.com/capnmidnight/logger.git"

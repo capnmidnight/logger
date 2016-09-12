@@ -147,4 +147,4 @@ function setup(type, target) {
 })();
     // end D:\Documents\VR\bare-bones-logger\src\logger\setup.js
     ////////////////////////////////////////////////////////////////////////////////
-console.info("bare-bones-logger v2.0.5. see http://www.primrosevr.com for more information.");
+console.info("bare-bones-logger v2.0.6. see https://github.com/capnmidnight/logger for more information.");
