@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-    // start C:\Users\ThinkPad\Documents\VR\bare-bones-logger\src\logger.js
+    // start D:\Documents\VR\bare-bones-logger\src\logger.js
 (function(){"use strict";
 
 var logger = {
@@ -12,10 +12,10 @@ var logger = {
 };
     if(typeof window !== "undefined") window.logger = logger;
 })();
-    // end C:\Users\ThinkPad\Documents\VR\bare-bones-logger\src\logger.js
+    // end D:\Documents\VR\bare-bones-logger\src\logger.js
     ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-    // start C:\Users\ThinkPad\Documents\VR\bare-bones-logger\src\logger\setup.js
+    // start D:\Documents\VR\bare-bones-logger\src\logger\setup.js
 (function(){"use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -59,6 +59,45 @@ function wrap(name) {
   };
 }
 
+function onError(message, source, lineno, colno, error) {
+  colno = colno || window.event && window.event.errorCharacter;
+  var done = false,
+      name = "error",
+      stack = error && error.stack;
+
+  if (!stack) {
+    if (arguments.callee) {
+      var head = arguments.callee.caller;
+      while (head) {
+        stack.push(head.name);
+        head = head.caller;
+      }
+    } else {
+      stack = "N/A";
+    }
+  }
+
+  var data = {
+    type: "error",
+    time: new Date().toLocaleTimeString(),
+    message: message,
+    source: source,
+    lineno: lineno,
+    colno: colno,
+    error: error.message,
+    stack: stack
+  };
+
+  while (!done && console[name]) {
+    try {
+      console[name](data);
+      done = true;
+    } catch (exp) {
+      name = mangle(name);
+    }
+  }
+}
+
 function setup(type, target) {
   if (type !== logger.DISABLED) {
     if ((type === logger.HTTP || type === logger.WEBSOCKET) && location.protocol === "file:") {
@@ -99,30 +138,13 @@ function setup(type, target) {
       });
     }
 
-    window.onerror = function (message, source, lineno, colno, error) {
-      var done = false,
-          name = "error",
-          data = {
-        time: new Date().toLocaleTimeString(),
-        message: message,
-        source: source,
-        lineno: lineno,
-        colno: colno,
-        error: error.message
-      };
-      while (!done && console[name]) {
-        try {
-          console[name](data);
-          done = true;
-        } catch (exp) {
-          name = mangle(name);
-        }
-      }
-    };
+    window.addEventListener("error", function (evt) {
+      onError(evt.message, evt.filename, evt.lineno, evt.colno, evt.error);
+    }, false);
   }
 }
     if(typeof window !== "undefined") window.logger.setup = setup;
 })();
-    // end C:\Users\ThinkPad\Documents\VR\bare-bones-logger\src\logger\setup.js
+    // end D:\Documents\VR\bare-bones-logger\src\logger\setup.js
     ////////////////////////////////////////////////////////////////////////////////
-console.info("bare-bones-logger v2.0.4. see http://www.primrosevr.com for more information.");
+console.info("bare-bones-logger v2.0.5. see http://www.primrosevr.com for more information.");

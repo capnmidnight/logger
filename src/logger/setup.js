@@ -38,6 +38,48 @@ function wrap(name) {
   };
 }
 
+function onError(message, source, lineno, colno, error) {
+  colno = colno || window.event && window.event.errorCharacter;
+  var done = false,
+    name = "error",
+    stack = error && error.stack;
+
+  if(!stack){
+    if(arguments.callee){
+      var head = arguments.callee.caller;
+      while(head){
+        stack.push(head.name);
+        head = head.caller;
+      }
+    }
+    else{
+      stack = "N/A";
+    }
+  }
+
+  var data = {
+      type: "error",
+      time: (new Date())
+        .toLocaleTimeString(),
+      message: message,
+      source: source,
+      lineno: lineno,
+      colno: colno,
+      error: error.message,
+      stack: stack
+    };
+
+  while (!done && console[name]) {
+    try {
+      console[name](data);
+      done = true;
+    }
+    catch (exp) {
+      name = mangle(name);
+    }
+  }
+}
+
 function setup(type, target) {
   if (type !== logger.DISABLED) {
     if ((type === logger.HTTP || type === logger.WEBSOCKET) && location.protocol === "file:") {
@@ -83,27 +125,8 @@ function setup(type, target) {
       });
     }
 
-    window.onerror = function (message, source, lineno, colno, error) {
-      var done = false,
-        name = "error",
-        data = {
-          time: (new Date())
-            .toLocaleTimeString(),
-          message: message,
-          source: source,
-          lineno: lineno,
-          colno: colno,
-          error: error.message
-        };
-      while (!done && console[name]) {
-        try {
-          console[name](data);
-          done = true;
-        }
-        catch (exp) {
-          name = mangle(name);
-        }
-      }
-    };
+    window.addEventListener("error", function(evt){
+      onError(evt.message, evt.filename, evt.lineno, evt.colno, evt.error);
+    }, false);
   }
 }
