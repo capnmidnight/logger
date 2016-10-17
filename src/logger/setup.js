@@ -13,8 +13,9 @@ function wrap(name) {
   return function () {
     var args = [];
     for (var i = 0; i < arguments.length; ++i) {
-      if (typeof arguments[i] === "object" && !(arguments[i] instanceof String)) {
-        var obj1 = arguments[i],
+      var elem = arguments[i];
+      if (typeof elem === "object" && !(elem instanceof String)) {
+        var obj1 = elem,
           obj2 = {};
         for (var key in obj1) {
           obj2[key] = obj1[key];
@@ -24,8 +25,11 @@ function wrap(name) {
         }
         args.push(obj2);
       }
-      else {
-        args.push(arguments[i].toString());
+      else if(elem) {
+        args.push(elem.toString());
+      }
+      else{
+        args.push("null");
       }
     }
     var obj = send({
@@ -33,7 +37,7 @@ function wrap(name) {
       args
     });
     if (obj) {
-      console[orig].apply(console, obj.args);
+      console[orig].apply(console, arguments);
     }
   };
 }
