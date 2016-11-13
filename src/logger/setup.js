@@ -84,7 +84,7 @@ function onError(message, source, lineno, colno, error) {
   }
 }
 
-function setup(type, target, redirects) {
+export default function setup(type, target, redirects) {
   if (type !== logger.DISABLED) {
     if ((type === logger.HTTP || type === logger.WEBSOCKET) && location.protocol === "file:") {
       console.warn("Can't perform HTTP requests from the file system. Not going to setup the error proxy, but will setup the error catch-all.");

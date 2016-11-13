@@ -1,5 +1,6 @@
 {
   "name": "bare-bones-logger",
+  "shortName": "logger",
   "description": "Proxies console.whatever commands to HTTP, WebSocket, or DOM.",
   "version": "2.0.9",
   "author": "Sean T. McBeth <sean@seanmcbeth.com> (https://www.seanmcbeth.com)",
@@ -11,6 +12,7 @@
   },
   "bugs": "https://github.com/capnmidnight/logger/issues",
   "files": [
+    "src/",
     "LICENSE.md",
     "README.md",
     "bare-bones-logger.js",
@@ -22,6 +24,6 @@
 	  "error handling"
   ],
   "devDependencies": {
-    "notiontheory-basic-build": "^2.6.0"
+    "notiontheory-basic-build": "^3.0.0"
   }
 }
