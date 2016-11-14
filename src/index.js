@@ -3,9 +3,7 @@ import webSocket from "./webSocket";
 import dom from "./dom";
 import user from "./user";
 
-export default {
-  http,
-  webSocket,
-  dom,
-  user
-};
+export { http };
+export { webSocket };
+export { dom };
+export { user };

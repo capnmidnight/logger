@@ -1,5 +1,4 @@
-import setup from "../src/user";
-import unused from "../src/http";
+import { user as setup, http } from "../src";
 
 var tbody = document.querySelector("tbody");
 setup(function(obj){
