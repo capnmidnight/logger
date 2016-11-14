@@ -12,7 +12,13 @@ function wrapFunction(send, name) {
     var args = [];
     for (var i = 0; i < arguments.length; ++i) {
       var elem = arguments[i];
-      if (typeof elem === "object" && !(elem instanceof String)) {
+      if(elem === null) {
+        args.push("null");
+      }
+      else if(elem === undefined) {
+        args.push("undefined");
+      }
+      else if (typeof elem === "object" && !(elem instanceof String)) {
         var obj1 = elem,
           obj2 = {};
         for (var key in obj1) {
@@ -23,11 +29,8 @@ function wrapFunction(send, name) {
         }
         args.push(obj2);
       }
-      else if(elem) {
+      else {
         args.push(elem.toString());
-      }
-      else{
-        args.push("null");
       }
     }
     var obj = send({
