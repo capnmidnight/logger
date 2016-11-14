@@ -10,6 +10,7 @@
     "url": "https://github.com/capnmidnight/logger.git"
   },
   "bugs": "https://github.com/capnmidnight/logger/issues",
+  "main" : "bareBonesLogger.js",
   "files": [
     "src/",
     "LICENSE.md",
