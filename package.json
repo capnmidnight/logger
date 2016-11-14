@@ -1,6 +1,5 @@
 {
   "name": "bare-bones-logger",
-  "shortName": "logger",
   "description": "Proxies console.whatever commands to HTTP, WebSocket, or DOM.",
   "version": "3.0.0",
   "author": "Sean T. McBeth <sean@seanmcbeth.com> (https://www.seanmcbeth.com)",

@@ -1,8 +1,11 @@
-import setup from "./logger/setup";
-export { setup };
+import http from "./http";
+import webSocket from "./webSocket";
+import dom from "./dom";
+import user from "./user";
 
-export var DISABLED = 0;
-export var HTTP = 1;
-export var WEBSOCKET = 2;
-export var DOM = 3;
-export var USER = 4;
+export default {
+  http,
+  webSocket,
+  dom,
+  user
+};

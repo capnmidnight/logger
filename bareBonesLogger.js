@@ -1,4 +1,4 @@
-(function (exports) {
+var bareBonesLogger = (function () {
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -201,13 +201,11 @@ var set = function set(object, property, value, receiver) {
   return value;
 };
 
-var send = null;
-
 function mangle(name) {
   return "_" + name;
 }
 
-function wrap(name) {
+function wrapFunction(send, name) {
   var orig = name;
   while (console[orig]) {
     orig = mangle(orig);
@@ -282,65 +280,68 @@ function onError(message, source, lineno, colno, error) {
   }
 }
 
-function setup(type, target, redirects) {
-  if (type !== logger.DISABLED) {
-    if ((type === logger.HTTP || type === logger.WEBSOCKET) && location.protocol === "file:") {
-      console.warn("Can't perform HTTP requests from the file system. Not going to setup the error proxy, but will setup the error catch-all.");
-    } else if (type === logger.HTTP) {
-      send = function send(data) {
-        var req = new XMLHttpRequest();
-        req.open("POST", target);
-        req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        req.send(JSON.stringify(data));
-        return data;
-      };
-    } else if (type === logger.WEBSOCKET) {
-      var socket = new WebSocket(target);
-      send = function send(data) {
-        socket.send(JSON.stringify(data));
-        return data;
-      };
-    } else if (type === logger.DOM) {
-      var output = document.querySelector(target);
-      send = function send(data) {
-        var elem = document.createElement("pre");
-        elem.appendChild(document.createTextNode(JSON.stringify(data)));
-        output.appendChild(elem);
-        return data;
-      };
-    } else if (type === logger.USER) {
-      if (!(target instanceof Function)) {
-        console.warn("The target parameter was expected to be a function, but it was", target);
-      } else {
-        send = target;
-      }
-    }
+function wrap(send) {
+  var redirects = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ["log", "info", "error"];
 
-    if (send !== null) {
-      redirects = redirects || ["log", "info", "error"];
-      redirects.forEach(function (n) {
-        console[n] = wrap(n);
-      });
-    }
+  if (send !== null) {
+    redirects.forEach(function (name) {
+      return console[n] = wrapFunction(send, name);
+    });
+  }
 
-    window.addEventListener("error", function (evt) {
-      onError(evt.message, evt.filename, evt.lineno, evt.colno, evt.error);
-    }, false);
+  window.addEventListener("error", function (evt) {
+    onError(evt.message, evt.filename, evt.lineno, evt.colno, evt.error);
+  }, false);
+}
+
+function identity(data) {
+  return data;
+}
+
+function http(target, redirects) {
+  return wrap(fileSystemWarning(function (data) {
+    var req = new XMLHttpRequest();
+    req.open("POST", target);
+    req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    req.send(JSON.stringify(data));
+    return data;
+  }), redirects);
+}
+
+function webSocket(target, redirects) {
+  var socket = new WebSocket(target);
+  return wrap(fileSystemWarning(function (data) {
+    socket.send(JSON.stringify(data));
+    return data;
+  }), redirects);
+}
+
+function dom(target, redirects) {
+  var output = document.querySelector(target);
+  return wrap(function (data) {
+    var elem = document.createElement("pre");
+    elem.appendChild(document.createTextNode(JSON.stringify(data)));
+    output.appendChild(elem);
+    return data;
+  }, redirects);
+}
+
+function user(target, redirects) {
+  if (!(target instanceof Function)) {
+    console.warn("The target parameter was expected to be a function, but it was", target);
+  } else {
+    return wrap(target, redirects);
   }
 }
 
-var DISABLED = 0;
-var HTTP = 1;
-var WEBSOCKET = 2;
-var DOM = 3;
-var USER = 4;
+var index = {
+  http: http,
+  webSocket: webSocket,
+  dom: dom,
+  user: user
+};
 
-exports.setup = setup;
-exports.DISABLED = DISABLED;
-exports.HTTP = HTTP;
-exports.WEBSOCKET = WEBSOCKET;
-exports.DOM = DOM;
-exports.USER = USER;
+return index;
 
-}((this.logger = this.logger || {})));
-//# sourceMappingURL=bare-bones-logger.js.map
+}());
+//# sourceMappingURL=bareBonesLogger.js.map

@@ -2,7 +2,6 @@
 <html>
   <head>
     <title>Test logger</title>
-    <script type="text/javascript" src="bare-bones-logger.js"></script>
   </head>
   <body>
     <table>
@@ -13,33 +12,8 @@
           <th>message</th>
         </tr>
       </thead>
-      <tbody>
-
-      </tbody>
+      <tbody></tbody>
     </table>
   </body>
-  <script type="text/javascript">
-    var tbody = document.querySelector("tbody");
-    logger.setup(logger.USER, function(obj){
-      var row = document.createElement("tr"),
-        cell1 = document.createElement("td"),
-        cell2 = document.createElement("td"),
-        cell3 = document.createElement("td");
-      cell1.appendChild(document.createTextNode(performance.now().toFixed(3)));
-      cell2.appendChild(document.createTextNode(obj.name));
-      cell3.appendChild(document.createTextNode(obj.args.map(function(o){
-        return JSON.stringify(o);
-      }).join(", ")));
-      row.appendChild(cell1);
-      row.appendChild(cell2);
-      row.appendChild(cell3);
-      tbody.appendChild(row);
-    });
-    console.log("OK");
-    var parts = ["log", "error", "warn", "info"];
-    for(var i = 0; i < 100; ++i){
-      console[parts[i % parts.length]]("Message #", i);
-    }
-    throw new Error("Whooops!");
-  </script>
+  <script src="test.js"></script>
 </html>
