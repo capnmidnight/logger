@@ -1,4 +1,4 @@
-var bareBonesLogger = (function () {
+(function (exports) {
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
@@ -215,7 +215,11 @@ function wrapFunction(send, name) {
     var args = [];
     for (var i = 0; i < arguments.length; ++i) {
       var elem = arguments[i];
-      if ((typeof elem === "undefined" ? "undefined" : _typeof(elem)) === "object" && !(elem instanceof String)) {
+      if (elem === null) {
+        args.push("null");
+      } else if (elem === undefined) {
+        args.push("undefined");
+      } else if ((typeof elem === "undefined" ? "undefined" : _typeof(elem)) === "object" && !(elem instanceof String)) {
         var obj1 = elem,
             obj2 = {};
         for (var key in obj1) {
@@ -225,10 +229,8 @@ function wrapFunction(send, name) {
           }
         }
         args.push(obj2);
-      } else if (elem) {
-        args.push(elem.toString());
       } else {
-        args.push("null");
+        args.push(elem.toString());
       }
     }
     var obj = send({
@@ -285,7 +287,7 @@ function wrap(send) {
 
   if (send !== null) {
     redirects.forEach(function (name) {
-      return console[n] = wrapFunction(send, name);
+      return console[name] = wrapFunction(send, name);
     });
   }
 
@@ -334,14 +336,10 @@ function user(target, redirects) {
   }
 }
 
-var index = {
-  http: http,
-  webSocket: webSocket,
-  dom: dom,
-  user: user
-};
+exports.http = http;
+exports.webSocket = webSocket;
+exports.dom = dom;
+exports.user = user;
 
-return index;
-
-}());
+}((this.bareBonesLogger = this.bareBonesLogger || {})));
 //# sourceMappingURL=bareBonesLogger.js.map

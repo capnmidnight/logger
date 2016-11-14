@@ -215,7 +215,11 @@ function wrapFunction(send, name) {
     var args = [];
     for (var i = 0; i < arguments.length; ++i) {
       var elem = arguments[i];
-      if ((typeof elem === "undefined" ? "undefined" : _typeof(elem)) === "object" && !(elem instanceof String)) {
+      if (elem === null) {
+        args.push("null");
+      } else if (elem === undefined) {
+        args.push("undefined");
+      } else if ((typeof elem === "undefined" ? "undefined" : _typeof(elem)) === "object" && !(elem instanceof String)) {
         var obj1 = elem,
             obj2 = {};
         for (var key in obj1) {
@@ -225,10 +229,8 @@ function wrapFunction(send, name) {
           }
         }
         args.push(obj2);
-      } else if (elem) {
-        args.push(elem.toString());
       } else {
-        args.push("null");
+        args.push(elem.toString());
       }
     }
     var obj = send({
@@ -294,16 +296,16 @@ function wrap(send) {
   }, false);
 }
 
+function identity(data) {
+  return data;
+}
+
 function user(target, redirects) {
   if (!(target instanceof Function)) {
     console.warn("The target parameter was expected to be a function, but it was", target);
   } else {
     return wrap(target, redirects);
   }
-}
-
-function identity(data) {
-  return data;
 }
 
 var tbody = document.querySelector("tbody");
