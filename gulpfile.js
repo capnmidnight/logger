@@ -1,6 +1,6 @@
 ﻿var gulp = require("gulp"),
   pkg = require("./package.json"),
-  build = require("../notiontheory-basic-build"),
+  build = require("notiontheory-basic-build"),
   nt = build.setup(gulp, pkg),
   js = nt.js("bare-bones-logger", "src", ["format"]),
   test = nt.js("test", "test");
