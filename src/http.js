@@ -2,7 +2,7 @@ import wrap from "./wrap";
 import withFileSystemWarning from "./withFileSystemWarning";
 
 export default function http(target, redirects) {
-  return wrap(fileSystemWarning(function (data) {
+  return wrap(withFileSystemWarning(function (data) {
     var req = new XMLHttpRequest();
     req.open("POST", target);
     req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
