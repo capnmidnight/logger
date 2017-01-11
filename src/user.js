@@ -1,10 +1,10 @@
 import wrap from "./wrap";
 
-export default function user(target, redirects) {
-  if (!(target instanceof Function)) {
-    console.warn("The target parameter was expected to be a function, but it was", target);
+export default function user(host, target, redirects) {
+  if (!(host instanceof Function)) {
+    console.warn("The host parameter was expected to be a function, but it was", host);
   }
   else {
-    return wrap(target, redirects);
+    return wrap(host, target, redirects);
   }
 }

@@ -88,13 +88,17 @@ function mangle(name) {
   return "_" + name;
 }
 
-function wrapFunction(send, name) {
+function wrapFunction(target, send, name) {
   var orig = name;
-  while (console[orig]) {
+  while (target[orig]) {
     orig = mangle(orig);
   }
-  console[orig] = console[name];
-  return function () {
+  if (target[name]) {
+    target[orig] = target[name];
+  } else {
+    orig = null;
+  }
+  target[name] = function () {
     var args = [];
     for (var i = 0; i < arguments.length; ++i) {
       var elem = arguments[i];
@@ -116,17 +120,15 @@ function wrapFunction(send, name) {
         args.push(elem.toString());
       }
     }
-    var obj = send({
-      name: name,
-      args: args
-    });
-    if (obj) {
-      console[orig].apply(console, arguments);
+
+    var obj = send({ name: name, args: args });
+    if (orig && target[orig] && obj) {
+      target[orig].apply(target, arguments);
     }
   };
 }
 
-function onError(message, source, lineno, colno, error) {
+function onError(target, message, source, lineno, colno, error) {
   colno = colno || window.event && window.event.errorCharacter;
   var done = false,
       name = "error",
@@ -155,9 +157,9 @@ function onError(message, source, lineno, colno, error) {
     stack: stack
   };
 
-  while (!done && console[name]) {
+  while (!done && target[name]) {
     try {
-      console[name](data);
+      target[name](data);
       done = true;
     } catch (exp) {
       name = mangle(name);
@@ -166,17 +168,20 @@ function onError(message, source, lineno, colno, error) {
 }
 
 function wrap(send) {
-  var redirects = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ["log", "info", "error"];
+  var target = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : console;
+  var redirects = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : ["log", "info", "error"];
 
   if (send !== null) {
     redirects.forEach(function (name) {
-      return console[name] = wrapFunction(send, name);
+      return wrapFunction(target, send, name);
     });
   }
 
   window.addEventListener("error", function (evt) {
-    onError(evt.message, evt.filename, evt.lineno, evt.colno, evt.error);
+    onError(target, evt.message, evt.filename, evt.lineno, evt.colno, evt.error);
   }, false);
+
+  return target;
 }
 
 function identity(data) {
@@ -193,39 +198,39 @@ function withFileSystemWarning(thunk) {
   return isBad ? identity : thunk;
 }
 
-function http(target, redirects) {
+function http(host, target, redirects) {
   return wrap(withFileSystemWarning(function (data) {
     var req = new XMLHttpRequest();
-    req.open("POST", target);
+    req.open("POST", host);
     req.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     req.send(JSON.stringify(data));
     return data;
-  }), redirects);
+  }), target, redirects);
 }
 
-function webSocket(target, redirects) {
-  var socket = new WebSocket(target);
+function webSocket(host, target, redirects) {
+  var socket = new WebSocket(host);
   return wrap(withFileSystemWarning(function (data) {
     socket.send(JSON.stringify(data));
     return data;
-  }), redirects);
+  }), target, redirects);
 }
 
-function dom(target, redirects) {
-  var output = document.querySelector(target);
+function dom(host, target, redirects) {
+  var output = document.querySelector(host);
   return wrap(function (data) {
     var elem = document.createElement("pre");
     elem.appendChild(document.createTextNode(JSON.stringify(data)));
     output.appendChild(elem);
     return data;
-  }, redirects);
+  }, target, redirects);
 }
 
-function user(target, redirects) {
-  if (!(target instanceof Function)) {
-    console.warn("The target parameter was expected to be a function, but it was", target);
+function user(host, target, redirects) {
+  if (!(host instanceof Function)) {
+    console.warn("The host parameter was expected to be a function, but it was", host);
   } else {
-    return wrap(target, redirects);
+    return wrap(host, target, redirects);
   }
 }
 

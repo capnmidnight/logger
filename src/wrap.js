@@ -2,13 +2,17 @@ function mangle(name) {
   return "_" + name;
 }
 
-function wrapFunction(send, name) {
+function wrapFunction(target, send, name) {
   var orig = name;
-  while (console[orig]) {
+  while (target[orig]) {
     orig = mangle(orig);
   }
-  console[orig] = console[name];
-  return function () {
+  if(target[name]) {
+    target[orig] = target[name];
+  } else {
+    orig = null;
+  }
+  target[name] = function () {
     var args = [];
     for (var i = 0; i < arguments.length; ++i) {
       var elem = arguments[i];
@@ -33,17 +37,15 @@ function wrapFunction(send, name) {
         args.push(elem.toString());
       }
     }
-    var obj = send({
-      name,
-      args
-    });
-    if (obj) {
-      console[orig].apply(console, arguments);
+
+    var obj = send({ name, args });
+    if (orig && target[orig] && obj) {
+      target[orig].apply(target, arguments);
     }
   };
 }
 
-function onError(message, source, lineno, colno, error) {
+function onError(target, message, source, lineno, colno, error) {
   colno = colno || window.event && window.event.errorCharacter;
   var done = false,
     name = "error",
@@ -74,9 +76,9 @@ function onError(message, source, lineno, colno, error) {
       stack: stack
     };
 
-  while (!done && console[name]) {
+  while (!done && target[name]) {
     try {
-      console[name](data);
+      target[name](data);
       done = true;
     }
     catch (exp) {
@@ -85,13 +87,15 @@ function onError(message, source, lineno, colno, error) {
   }
 }
 
-export default function wrap(send, redirects = ["log", "info", "error"]) {
+export default function wrap(send, target = console, redirects = ["log", "info", "error"]) {
   if (send !== null) {
     redirects.forEach((name) =>
-      console[name] = wrapFunction(send, name));
+      wrapFunction(target, send, name));
   }
 
   window.addEventListener("error", function(evt){
-    onError(evt.message, evt.filename, evt.lineno, evt.colno, evt.error);
+    onError(target, evt.message, evt.filename, evt.lineno, evt.colno, evt.error);
   }, false);
+
+  return target;
 };
