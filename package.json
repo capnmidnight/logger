@@ -1,7 +1,7 @@
 {
   "name": "bare-bones-logger",
   "description": "Proxies console.whatever commands to HTTP, WebSocket, or DOM.",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "author": "Sean T. McBeth <sean@seanmcbeth.com> (https://www.seanmcbeth.com)",
   "license": "GPL-3.0",
   "homepage": "https://github.com/capnmidnight/logger",
@@ -15,8 +15,8 @@
     "src/",
     "LICENSE.md",
     "README.md",
-    "bare-bones-logger.js",
-    "bare-bones-logger.min.js",
+    "bareBonesLogger.js",
+    "bareBonesLogger.min.js",
     "index.html"
   ],
   "keywords": [
