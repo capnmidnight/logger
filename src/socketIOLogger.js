@@ -1,22 +1,25 @@
 var readline = require("readline"),
   io = require("socket.io")(),
   clients = [],
-  rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    terminal: true,
-    historySize: 30,
-    removeHistoryDuplicates: true,
-    prompt: "CMD:> "
-  });
-
-rl.on("line", function(input) {
-  clients.forEach((client) =>
-    client.emit("command", input.trim()));
-  rl.prompt();
-});
+  rl = null;
 
 module.exports = function socketIOLogger(client) {
+  if(rl === null) {
+    rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+      terminal: true,
+      historySize: 30,
+      removeHistoryDuplicates: true,
+      prompt: "CMD:> "
+    });
+
+    rl.on("line", function(input) {
+      clients.forEach((client) =>
+        client.emit("command", input.trim()));
+      rl.prompt();
+    });
+  }
   clients.push(client);
   client.on("logging", function(data) {
     var func = console[data.name];
