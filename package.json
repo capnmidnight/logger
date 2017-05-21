@@ -1,8 +1,8 @@
 {
   "name": "bare-bones-logger",
-  "description": "Proxies console.whatever commands to HTTP, WebSocket, or DOM.",
   "version": "4.1.2",
-  "author": "Sean T. McBeth <sean@seanmcbeth.com> (https://www.seanmcbeth.com)",
+  "description": "Proxies console.whatever commands to HTTP, WebSocket, Socket.IO, or DOM.",
+  "author": "Sean T. McBeth <sean@notiontheory.com> (https://www.notiontheory.com)",
   "license": "GPL-3.0",
   "homepage": "https://github.com/capnmidnight/logger",
   "repository": {
@@ -23,7 +23,10 @@
     "logging",
 	  "error handling"
   ],
+  "dependencies": {
+    "socket.io": "^1.4.4"
+  },
   "devDependencies": {
-    "notiontheory-basic-build": "^3.0.0"
+    "marigold-build": "^1.7.8"
   }
 }

@@ -1,87 +1,15 @@
-(function (exports) {
-'use strict';
+(function (global, factory) {
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('socket.io/lib/client')) :
+	typeof define === 'function' && define.amd ? define(['exports', 'socket.io/lib/client'], factory) :
+	(factory((global.BareBonesLogger = global.BareBonesLogger || {}),global.io));
+}(this, (function (exports,io) { 'use strict';
+
+io = 'default' in io ? io['default'] : io;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
 } : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;
-
-    if (getter === undefined) {
-      return undefined;
-    }
-
-    return getter.call(receiver);
-  }
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var set = function set(object, property, value, receiver) {
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent !== null) {
-      set(parent, property, value, receiver);
-    }
-  } else if ("value" in desc && desc.writable) {
-    desc.value = value;
-  } else {
-    var setter = desc.set;
-
-    if (setter !== undefined) {
-      setter.call(receiver, value);
-    }
-  }
-
-  return value;
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
 
 function mangle(name) {
@@ -184,6 +112,16 @@ function wrap(send) {
   return target;
 }
 
+function dom(host, target, redirects) {
+  var output = document.querySelector(host);
+  return wrap(function (data) {
+    var elem = document.createElement("pre");
+    elem.appendChild(document.createTextNode(JSON.stringify(data)));
+    output.appendChild(elem);
+    return data;
+  }, target, redirects);
+}
+
 function identity(data) {
   return data;
 }
@@ -208,22 +146,12 @@ function http(host, target, redirects) {
   }), target, redirects);
 }
 
-function webSocket(host, target, redirects) {
-  var socket = new WebSocket(host);
+function socketio(host, target, redirects) {
+  var socket = io(host);
   return wrap(withFileSystemWarning(function (data) {
-    socket.send(JSON.stringify(data));
+    socket.emit("logging", data);
     return data;
   }), target, redirects);
-}
-
-function dom(host, target, redirects) {
-  var output = document.querySelector(host);
-  return wrap(function (data) {
-    var elem = document.createElement("pre");
-    elem.appendChild(document.createTextNode(JSON.stringify(data)));
-    output.appendChild(elem);
-    return data;
-  }, target, redirects);
 }
 
 function user(host, target, redirects) {
@@ -234,9 +162,21 @@ function user(host, target, redirects) {
   }
 }
 
-exports.http = http;
-exports.webSocket = webSocket;
-exports.dom = dom;
-exports.user = user;
+function webSocket(host, target, redirects) {
+  var socket = new WebSocket(host);
+  return wrap(withFileSystemWarning(function (data) {
+    socket.send(JSON.stringify(data));
+    return data;
+  }), target, redirects);
+}
 
-}((this.bareBonesLogger = this.bareBonesLogger || {})));
+exports.dom = dom;
+exports.http = http;
+exports.io = socketio;
+exports.user = user;
+exports.webSocket = webSocket;
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+})));
+//# sourceMappingURL=bare-bones-logger.js.map
