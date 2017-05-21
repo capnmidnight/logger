@@ -1,37 +1,15 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Test logger</title>
-  </head>
-  <body>
-    <table>
-      <thead>
-        <tr>
-          <th>time</th>
-          <th>method</th>
-          <th>message</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </body>
-  <script src="node_modules/socket.io-client/dist/socket.io.js"></script>
-  <script src="bare-bones-logger.js"></script>
-  <script>
-    BareBonesLogger.io(location.origin.replace(/^http/, "ws"));
-    (function(path) {
-    var status = "enabled";
-    io(path)
-      .on("connect", function() {
-        console.log("Live reload " + status);
-        status = "reestablished";
-      })
-      .on("stop", function() { dispatchEvent(new CustomEvent("stop")); })
-      .on("reload", function() { location.reload(); })
-      .on("command", function(cmd) {
-        console._log(cmd);
-        console.log(eval(cmd));
-      });
-    })(location.origin.replace(/^http/, "ws"));
-  </script>
-</html>
+<!DOCTYPE html><html><head><title>Test logger</title></head><body><table><thead><tr><th>time</th><th>method</th><th>message</th></tr></thead><tbody></tbody></table></body><script src="node_modules/socket.io-client/dist/socket.io.js"></script><script src="bare-bones-logger.js"></script><script>BareBonesLogger.io(location.origin.replace(/^http/, "ws"));
+(function(path) {
+var status = "enabled";
+io(path)
+  .on("connect", function() {
+    console.log("Live reload " + status);
+    status = "reestablished";
+  })
+  .on("stop", function() { dispatchEvent(new CustomEvent("stop")); })
+  .on("reload", function() { location.reload(); })
+  .on("command", function(cmd) {
+    console._log(cmd);
+    console.log(eval(cmd));
+  });
+})(location.origin.replace(/^http/, "ws"));</script></html>

@@ -1,7 +1,7 @@
 {
   "name": "bare-bones-logger",
-  "version": "4.1.2",
   "description": "Proxies console.whatever commands to HTTP, WebSocket, Socket.IO, or DOM.",
+  "version": "5.0.0",
   "author": "Sean T. McBeth <sean@notiontheory.com> (https://www.notiontheory.com)",
   "license": "GPL-3.0",
   "homepage": "https://github.com/capnmidnight/logger",
